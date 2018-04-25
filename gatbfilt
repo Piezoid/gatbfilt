@@ -1,0 +1,16 @@
+#!/bin/sh
+
+sed -e 's/gatb:://g' -e 's/core:://g' \
+    -e 's/boost::variant/variant/g' \
+    -e 's/boost::detail::variant/variant/g' \
+    -e 's/tools::math::IntegerTemplate<boost::mpl::vector4<mpl_::int_<32>, mpl_::int_<64>, mpl_::int_<96>, mpl_::int_<128> > >/tools::math::Integer/g' \
+    -e 's/debruijn::impl::Node_t<tools::math::Integer >/Node/g' \
+    -e 's/Edge_t<Node >/Edge/g' \
+    -e 's/boost::mpl::v_item<debruijn::impl::GraphData<128ul>, boost::mpl::v_item<debruijn::impl::GraphData<96ul>, boost::mpl::v_item<debruijn::impl::GraphData<64ul>, boost::mpl::v_item<debruijn::impl::GraphData<32ul>, boost::mpl::vector0<mpl_::na>, 0>, 0>, 0>, 0>/debruijn::impl::GraphDataSequence/g' \
+    -e 's/variant<variant::over_sequence<debruijn::impl::GraphDataSequence >>/debruijn::impl::GraphDataVariant/g' \
+    -e 's/debruijn::impl::GraphTemplate<Node, debruijn::impl::Edge, debruijn::impl::GraphDataVariant >/debruijn::impl::Graph/g' \
+    -e 's/<Node, debruijn::impl::Edge, debruijn::impl::GraphDataVariant >/<>/g' \
+    ${1:-/dev/stdin} |
+perl -pe 's/variant::invoke_visitor<.*?>::result_type/result_type/g;' \
+     -pe 's/boost::mpl::v_iter<(.*?), (\d+)l>, boost::mpl::v_iter<\1, (\d+)l>/Range[\1, \2, \3]/g;'
+
